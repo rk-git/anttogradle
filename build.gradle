@@ -1,0 +1,46 @@
+defaultTasks 'test'
+buildDir = 'dist'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+ext {
+    antTarget = "feature"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir = 'src'
+        }
+    }
+    test {
+        java {
+            srcDir = 'test'
+        }
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://repo.spring.io/libs-release" }
+}
+
+dependencies {
+    // Add at least version 4.8 of JUnit as dependency.
+    testCompile 'junit:junit:[4.8,)'
+}
+
+task wrapper(type: Wrapper) {
+    println '[Running tasks for project ' + project.getDescription() + ']'
+    gradleVersion = '1.11'
+}
+
+task antBuild (group: 'legacyBuild', description : 'Invoke Ant build') {
+    println '[Invoking Ant build]'
+    ant.importBuild 'build/build.xml'
+}
+
+clean  {
+         project.file('dist').deleteDir()
+}        
